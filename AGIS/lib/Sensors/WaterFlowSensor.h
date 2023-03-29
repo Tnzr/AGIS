@@ -1,19 +1,18 @@
 // WaterPump.h
 
-#ifndef WaterFlowSensor_h
-#define WaterFlowSensor_h
+#pragma once
+#include <Arduino.h>
 
 class WaterFlowSensor{
   
   private:
-    int sensor_pin;
+    unsigned int sensor_pin;
     float tick_to_volume;
     volatile long pulse_count;
-    void increase();
-    
+    void *pulse_tick();
+
   public:
     WaterFlowSensor(int sense_pin, float conversion);
-  }
-
-
-#endif WaterFlowSensor_h
+    // static void _attachInterrupt(uint8_t pin, void *callback, int mode);
+    float getVolume();
+  };
