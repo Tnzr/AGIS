@@ -1,20 +1,17 @@
 // WaterPump.h
 
-#ifndef WaterPump_h
-#define WaterPump_h
-
+#pragma once
 #include <Arduino.h>
 
 class WaterPump {
   private:
-    int pwm_pin;
+    uint8_t pwm_pin;
+    uint8_t State;
     float lph;
-    int State;
+    
     
   public:
-    WaterPump(int pwm_pin, float lph);
+    WaterPump(uint8_t pwm_pin, float lph);
     void setPWM(float dcycle);
     int getState();
 };
-
-#endif WaterPump_h
