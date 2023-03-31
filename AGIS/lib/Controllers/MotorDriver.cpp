@@ -13,9 +13,9 @@ MotorDriver::MotorDriver(unsigned int enable_pin, unsigned short int inA_pin, un
 }
 
 void MotorDriver::setPolarity(bool new_polarity){
-    if(this->polarity!=new_polarity){ // only change polarity if it needs to be changed
+    if(this->polarity != new_polarity){ // only change polarity if it needs to be changed
         this->polarity = new_polarity; // set to new polarity
-        analogWrite(this->enable_pin, 0); // Turn the motor off to re-circuit safely
+        analogWrite(this->enable_pin, 0); // Turn the motor and H-bridge OFF to re-circuit safely
         digitalWrite(this->inA_pin, LOW);
         digitalWrite(this->inB_pin, LOW);
         digitalWrite(this->inA_pin, this->polarity); // Set A to polarity value and B to opposite
@@ -35,4 +35,5 @@ void MotorDriver::setPWM(unsigned short int dcycle){
 void MotorDriver::setSpeed(float speed){
     setPolarity(speed < 0); // derive polarity from sign
     setPWM(abs(speed)); // dutycycle == speed
+    this->speed = speed;
 }
