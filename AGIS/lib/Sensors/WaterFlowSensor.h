@@ -19,10 +19,8 @@ class WaterFlowSensor{
     void updateFlowRate();
 
   public:
-    WaterFlowSensor(int sense_pin, float conversion);
+    WaterFlowSensor(int sense_pin, float conversion, unsigned long updateDelta);
     void resetVolume();
-    // static void _attachInterrupt(uint8_t pin, void *callback, int mode);
     float getVolume();
-
-
+    // static void _attachInterrupt(uint8_t pin, void *callback, int mode);
   };

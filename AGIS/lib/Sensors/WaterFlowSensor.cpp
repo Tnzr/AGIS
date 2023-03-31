@@ -3,12 +3,21 @@
 #include "WaterFlowSensor.h"
 
 
-WaterFlowSensor::WaterFlowSensor(int sense_pin, float conversion){
+WaterFlowSensor::WaterFlowSensor(int sense_pin, float conversion, 
+                                unsigned long updateDelta){
     this->sensor_pin = sense_pin;
     this->tickToVolume = conversion;
     this->tick_count = 0;
+    this->flowRate = 0;
+    this->delta = 0;
+    this->updateDelta = updateDelta;
+    this->currentVolume = 0;
+    this->now = millis();
+    this->lastUpdate = this->now;
+
     pinMode(sensor_pin, INPUT);
-    attachInterrupt(digitalPinToInterrupt(this->sensor_pin), (void(*)())this->pulse_tick(), RISING);
+    attachInterrupt(digitalPinToInterrupt(this->sensor_pin), 
+      (void(*)())this->pulse_tick(), RISING);
   }
 
 // static void _attachInterrupt(uint8_t pin, void *callback, int mode){
