@@ -5,8 +5,9 @@
 
 WaterFlowSensor::WaterFlowSensor(int sense_pin, float conversion){
     this->sensor_pin = sense_pin;
-    this->tick_to_volume = conversion;
-    this->pulse_count = 0;
+    this->tickToVolume = conversion;
+    this->tick_count = 0;
+    pinMode(sensor_pin, INPUT);
     attachInterrupt(digitalPinToInterrupt(this->sensor_pin), (void(*)())this->pulse_tick(), RISING);
   }
 
@@ -15,10 +16,29 @@ WaterFlowSensor::WaterFlowSensor(int sense_pin, float conversion){
 // }
 
 void *WaterFlowSensor::pulse_tick(){
-  this->pulse_count++;
+  this->now = millis();
+  this->tick_count++;
+  this->delta = this->now-this->lastUpdate;
+
+  if (this->delta >= this->updateDelta){
+    this->updateFlowRate();
+    this->lastUpdate = this->now;
+  }
+  return nullptr;
+}
+
+
+void WaterFlowSensor::updateFlowRate(){
+  // pulse * V/pulse * 1,000ms/s / delta (ms)
+  this->flowRate = this->tick_count * this->tickToVolume * 1000 / this->delta;
+  this->tick_count = 0;
 }
 
 float WaterFlowSensor::getVolume(){
-  return this->pulse_count*tick_to_volume;
+  return this->currentVolume;
+}
+
+void WaterFlowSensor::resetVolume(){
+  this->currentVolume = 0;
 }
 
