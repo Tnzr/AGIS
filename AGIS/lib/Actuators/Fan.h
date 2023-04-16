@@ -6,7 +6,7 @@ class Fan{
     private:
         uint8_t driving_pin;
         uint8_t sensor_pin;
-        unsigned long delta; // in millis
+        unsigned long deltaTime; // in millis
         float currentRPM; // rev / min
         unsigned long updateDelta; // in millis
         unsigned long now; // current milli time
@@ -21,7 +21,8 @@ class Fan{
 
     public:
         Fan(uint8_t driving_pin, uint8_t sensor_pin, 
-            unsigned short int max_rpm, unsigned short int cfm, unsigned long updateDelta = 0);
+            unsigned short int max_rpm, unsigned short int cfm, 
+            unsigned long updateDelta = 0);
         unsigned short int getRPM();
         void setPWM(float dcycle);
 };

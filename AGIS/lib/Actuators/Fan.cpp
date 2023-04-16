@@ -4,7 +4,7 @@ Fan::Fan(uint8_t driving_pin, uint8_t sensor_pin,
 unsigned short int max_rpm, unsigned short int cfm, unsigned long updateDelta){
         this->driving_pin = driving_pin;
         this->currentRPM = 0;
-        this->delta = 0; 
+        this->deltaTime = 0; 
         this->lastUpdate = millis(); 
         this->maxRPM = max_rpm; // max rev / min
         this->cfm = cfm; // cubic feet / minute
@@ -24,8 +24,11 @@ unsigned short int max_rpm, unsigned short int cfm, unsigned long updateDelta){
 void *Fan::rev_tick(){
     this->now = millis();
     this->tickCount++;
-    this->delta = this->now-this->lastUpdate;
-    if (this->delta >= this->updateDelta){
+    this->deltaTime = this->now-this->lastUpdate;
+
+  // TODO 
+  // deltaTime/tick timeout
+    if (this->deltaTime >= this->updateDelta){
         this->updateTickFrequency();
         this->lastUpdate = this->now;
     }
@@ -33,8 +36,8 @@ void *Fan::rev_tick(){
 }
 
 void Fan::updateTickFrequency(){
-    // pulse * 6E4 (ms/Min) / (delta_t (ms) * pulse/REV )
-    this->currentRPM = this->tickCount * 6E4 / (this->delta * this->tpr);
+    // pulse * 6E4 (ms/Min) / (deltaTime (ms) * pulse/REV )
+    this->currentRPM = this->tickCount * 6E4 / (this->deltaTime * this->tpr);
     this->tickCount = 0;
 }
 

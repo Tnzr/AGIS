@@ -12,7 +12,7 @@ class WaterFlowSensor{
     float currentVolume;
     volatile unsigned short int tick_count; // 
     unsigned long lastUpdate; // time of last update
-    unsigned long delta; // differance in millis
+    unsigned long deltaTime; // differance in millis
     unsigned long now; 
     float updateDelta;
     void *pulse_tick();
