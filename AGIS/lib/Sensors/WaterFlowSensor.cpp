@@ -9,7 +9,7 @@ WaterFlowSensor::WaterFlowSensor(int sense_pin, float conversion,
     this->tickToVolume = conversion;
     this->tick_count = 0;
     this->flowRate = 0;
-    this->delta = 0;
+    this->deltaTime = 0;
     this->updateDelta = updateDelta;
     this->currentVolume = 0;
     this->now = millis();
@@ -27,9 +27,12 @@ WaterFlowSensor::WaterFlowSensor(int sense_pin, float conversion,
 void *WaterFlowSensor::pulse_tick(){
   this->now = millis();
   this->tick_count++;
-  this->delta = this->now-this->lastUpdate;
+  this->deltaTime = this->now-this->lastUpdate;
+  
+  // TODO 
+  // deltaTime/tick timeout
 
-  if (this->delta >= this->updateDelta){
+  if (this->deltaTime >= this->updateDelta){
     this->updateFlowRate();
     this->lastUpdate = this->now;
   }
@@ -38,8 +41,8 @@ void *WaterFlowSensor::pulse_tick(){
 
 
 void WaterFlowSensor::updateFlowRate(){
-  // pulse * V/pulse * 1,000ms/s / delta (ms)
-  this->flowRate = this->tick_count * this->tickToVolume * 1000 / this->delta;
+  // pulse * V/pulse * 1,000ms/s / deltaTime (ms)
+  this->flowRate = this->tick_count * this->tickToVolume * 1000 / this->deltaTime;
   this->tick_count = 0;
 }
 

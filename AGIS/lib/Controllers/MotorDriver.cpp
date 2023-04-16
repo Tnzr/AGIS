@@ -1,4 +1,3 @@
-#pragma once
 #include <MotorDriver.h>
 
 MotorDriver::MotorDriver(unsigned int enable_pin, unsigned short int inA_pin, unsigned short inB_pin, bool polarity){
@@ -18,6 +17,7 @@ void MotorDriver::setPolarity(bool new_polarity){
         analogWrite(this->enable_pin, 0); // Turn the motor and H-bridge OFF to re-circuit safely
         digitalWrite(this->inA_pin, LOW);
         digitalWrite(this->inB_pin, LOW);
+        
         digitalWrite(this->inA_pin, this->polarity); // Set A to polarity value and B to opposite
         digitalWrite(this->inB_pin, !this->polarity);
     }
