@@ -1,6 +1,6 @@
 #include <PID.h>
 
-PID::PID(double Kp, double Ki, double Kd, unsigned long dt = 1, double min = -1, double max = 1){
+PID::PID(double Kp, double Ki, double Kd, unsigned long dt, double min, double max){
     this->Kp = Kp;
     this->Ki = Ki;
     this->Kd = Kd;
@@ -10,6 +10,9 @@ PID::PID(double Kp, double Ki, double Kd, unsigned long dt = 1, double min = -1,
     this->state = 0;
     this->lastUpdate = 0;
     this->deltaTime = 0;
+    this->deltaTime = dt;
+    this->min = min;
+    this->max = max;
 }
 
 double PID::calc_ctrl(double state, double target){

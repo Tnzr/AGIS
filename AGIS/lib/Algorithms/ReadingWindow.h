@@ -1,14 +1,16 @@
 #pragma once
 #include <SensorReading.h>
+#include <FTBDLL.h>
 #include <vector>
 #include <list>
-#include "FTBDLL.h"
+
 // Window Tail Resampling for Asynchonous Discrete-Time Integration
 
-template<typename dType, typename tType> class ReadingWindow : public FTBDLL
+template<typename dType, typename tType> class ReadingWindow
 {
 private:
     /* data */
+    FTBDLL<SensorReading<dType, tType>> readingsList;
     std::list<SensorReading<dType, tType>> readings;
     // TODO
     // MAKE CUSTOM LIST CONTAINER

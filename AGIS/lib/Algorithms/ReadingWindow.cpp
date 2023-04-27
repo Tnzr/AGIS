@@ -1,14 +1,14 @@
-#include "ReadingWindow.h"
+#include <ReadingWindow.h>
 
 template<typename dType, typename tType> 
-ReadingWindow<dType, tType>::ReadingWindow(tType tWindow = 1000, size_t max_readings = 10){
+ReadingWindow<dType, tType>::ReadingWindow(tType tWindow, size_t max_readings){
     this->readings.reserve(max_readings);
     this->tWindow = tWindow;
 }
 
 template<typename dType, typename tType>
 void ReadingWindow<dType, tType>::offsetReadings(tType offset){
-    for(unsigned int i = 0; i < this->readings.size()){
+    for(unsigned int i = 0; i < this->readings.size(); i++){
         this->readings[i] += offset;
     }
 }
@@ -44,10 +44,6 @@ void ReadingWindow<dType, tType>::deltaDownsample(tType delta){ // Delta is Half
         }
     }
 
-    for (std::list<auto>::iterator i = this.readings.begin(); i!= this->readings.end() ; i++)
-    {
-        /* code */
-    }
     
 }
 
@@ -65,7 +61,6 @@ bool ReadingWindow<dType, tType>::tailOverflow(){
     } else {
         return false;
     }
-    
 }
 
 
