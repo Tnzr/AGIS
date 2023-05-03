@@ -3,8 +3,8 @@
 
 CMakeFiles/AlgoTestBed.dir/main.cpp.o: main.cpp
 CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/Algorithms.h
-CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/FTBDLL.cpp
 CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/FTBDLL.h
+CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/FTBDLL.tpp
 CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/Node.h
 CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/PID.h
 CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/ReadingWindow.h

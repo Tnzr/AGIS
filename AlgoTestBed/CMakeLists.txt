@@ -7,7 +7,7 @@ include_directories(lib)
 add_executable(AlgoTestBed main.cpp ${SOURCE_FILES} lib/Algorithms.h lib/PID.h lib/FTBDLL.h lib/ReadingWindow.h )
 
 set(SOURCE_FILES
-        lib/FTBDLL.cpp
+        lib/FTBDLL.tpp
         lib/ReadingWindow.cpp
         lib/SensorReading.cpp)
 

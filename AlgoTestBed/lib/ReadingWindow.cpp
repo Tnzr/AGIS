@@ -67,7 +67,7 @@ bool ReadingWindow<dType, tType>::tailOverflow(){
 template<typename dType, typename tType> 
 void ReadingWindow<dType, tType>::addReading(dType value, tType time){
     SensorReading<dType, tType> reading = {value, time}; // Init reading struct
-    this->readings.push_back(reading); // Add reading to back of list
+    this->readings.insertPresent(reading); // Add reading to back of list
     if(this->tailOverflow()){ // if the oldest node is past the time window
         
     }
