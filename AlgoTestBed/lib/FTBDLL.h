@@ -1,6 +1,6 @@
 #pragma once
 #include "Node.h"
-#include <iomanip>
+// #include <iomanip>
 template<typename dType> 
 class FTBDLL{ // Front to Back Doubly Linked List
     private:
@@ -14,15 +14,19 @@ class FTBDLL{ // Front to Back Doubly Linked List
         ~FTBDLL();
         void reserve(int reserve_size=1);
         void display();
-        bool push_back(dType data); // after last valid node
-        bool push_front(dType data); // before head node
+        bool insertPresent(dType data, int expand = 0); // after last valid node
+        bool insertPast(dType data, int expand = 0); // before head node
         void clear(Node<dType> *node); // clear data and stitch sorrounding nodes
         void clear(Node<dType> *older_node, Node<dType> *recent_node); // 
         void detach(Node<dType> *node); // clear data and stitch sorrounding
         void detach(Node<dType> *older_node, Node<dType> *recent_node);
         bool isFull();
+        void clearPast();
+        void clearPresent();
         void emptyList();
         int getSize();
+        static bool areLinked(Node<dType> *older_node, Node<dType> *recent_node);
 
 };
-#include "FTBDLL.cpp"
+
+#include "FTBDLL.tpp"
