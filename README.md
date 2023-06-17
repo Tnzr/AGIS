@@ -13,8 +13,7 @@ https://www.instagram.com/bryangarcia_mk22/
 
 Resume: https://docs.google.com/document/d/1mOsy7LR0UW7GSAwi61a57nvnLFafWwtOI7viWT2LvyU/edit?usp=sharing
 
-GitHub:
-https://github.com/Tnzr/AGIS
+GoFundMe: https://www.gofundme.com/f/autonomous-greenhouse-irrigation-system-agis
 
 Vision:
 AGIS aims at automating as much labor from the production of vegetation and mushrooms at an affordable price. AGIS's vision is for Greenhouses to be the next standard household appliance. AGIS will have a minimal and affordable model, along with an upgraded and complete model. AGIS would make sure all conditions are optimal to prevent contamination. In addition, the upgraded model will be able to detect early mycelium contamination and monitor general plant health using Computer Vision and Machine Learning techniques.
