@@ -1,10 +1,10 @@
 # AGIS
-Open Source Autonomous Greenhouse Irrigation System
+GoFundMe: https://www.gofundme.com/f/autonomous-greenhouse-irrigation-system-agis
 
+Open Source Autonomous Greenhouse Irrigation System
 ![Autonomous Greenhouse Irrigation System](https://raw.githubusercontent.com/Tnzr/AGIS/main/AGIS.jpg)
 
-
-GoFundMe: https://www.gofundme.com/f/autonomous-greenhouse-irrigation-system-agis
+With a small donation of at least $1, you could further the development of AGIS, an Open-Source Greenhouse Automation Initiative that aims to provide an API (Application Programming Interface) along with a HAL (Hardware Abstraction Layer) to rapidly develop the needed Machine intelligence for custom models, no matter the size of the Greenhouse. From existing greenhouses to new personal custom models. Not counting food that may go to waste inside, around 40% of food is wasted before it enters the household. AGIS's mission is to help facilitate access to food and reduce wasted food by guaranteeing optimal conditions with little to no effort. AGIS aims to be an updated Database of Algorithms and Solutions related to Agricultural Machine Intelligence. There will be a Non-Profit/Benefit Business to fund the efforts of providing Autonomous Greenhouses in Places of Need once a stable version has been reached.
 
 Hello, my name is Bryan Garcia Rodriguez [Tnzr] and I'm a recent Computer Engineering Graduate from Florida Polytechnic University:
 
