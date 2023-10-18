@@ -1,15 +1,13 @@
 # AGIS
 GoFundMe: https://www.gofundme.com/f/autonomous-greenhouse-irrigation-system-agis
 
-Open Source Autonomous Greenhouse Irrigation System
-![Autonomous Greenhouse Irrigation System](https://raw.githubusercontent.com/Tnzr/AGIS/main/AGIS.jpg)
+Open Source Autonomous Greenhouse Integrated System
+![Autonomous Greenhouse Integrated System](https://raw.githubusercontent.com/Tnzr/AGIS/main/AGIS.jpg)
 
 With a small donation of at least $1, you could further the development of AGIS, an Open-Source Greenhouse Automation Initiative that aims to provide an API (Application Programming Interface) along with a HAL (Hardware Abstraction Layer) to rapidly develop the needed Machine intelligence for custom models, no matter the size of the Greenhouse. From existing greenhouses to new personal custom models. Not counting food that may go to waste inside, around 40% of food is wasted before it enters the household. AGIS's mission is to help facilitate access to food and reduce wasted food by guaranteeing optimal conditions with little to no effort. AGIS aims to be an updated Database of Algorithms and Solutions related to Agricultural Machine Intelligence. There will be a Non-Profit/Benefit Business to fund the efforts of providing Autonomous Greenhouses in Places of Need once a stable version has been reached.
 
-Hello, my name is Bryan Garcia Rodriguez [Tnzr] and I'm a recent Computer Engineering Graduate from Florida Polytechnic University:
 
-Check AGIS highlight on IG for updates:
-https://www.instagram.com/bryangarcia_mk22/
+Hello, my name is Bryan Garcia Rodriguez [Tnzr] and I'm a recent Computer Engineering Graduate from Florida Polytechnic University:
 
 Resume: https://docs.google.com/document/d/1mOsy7LR0UW7GSAwi61a57nvnLFafWwtOI7viWT2LvyU/edit?usp=sharing
 
@@ -22,7 +20,7 @@ There will be a Non-Profit/Benefit Business surrounding setting up Autonomous Gr
 
 
 Development:
-The goal of this GoFundMe is to raise funds for the OpenSource development of the initial prototype of "AGIS", an Autonomous Greenhouse Irrigation System. This project will first concentrate on healthy Mycelium growth but the same exact design would also work to effortlessly grow plants.
+The goal of this GoFundMe is to raise funds for the OpenSource development of the initial prototype of "AGIS", an Autonomous Greenhouse Integrated System. This project will first concentrate on healthy Mycelium growth but the same exact design would also work to effortlessly grow plants.
 
 I have little inventory at the moment and will work on slowly getting parts by their priority. Any contributions will greatly speed up the initial prototyping phase. After having a fully functional prototype, I will design PCBs that will eliminate most of the electrical assembly complications.
 
