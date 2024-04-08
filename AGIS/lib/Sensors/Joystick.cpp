@@ -18,3 +18,19 @@ void Joystick::update_states(){
     this->VRY = analogRead(this->VRY_pin);
     this->swbtn = digitalRead(this->swbtn_pin);    
 }
+
+int Joystick::read_vrx(){
+    this->VRX = analogRead(this->VRX_pin);
+    return this->VRX;
+}
+int Joystick::read_vry(){
+    this->VRY = analogRead(this->VRY_pin);
+    return this->VRY;
+
+}
+bool Joystick::read_sw(){
+    this->swbtn = digitalRead(this->swbtn_pin);
+    return this->swbtn;
+}
+
+

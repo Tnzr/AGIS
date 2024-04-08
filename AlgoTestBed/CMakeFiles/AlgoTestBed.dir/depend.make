@@ -8,5 +8,7 @@ CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/FTBDLL.tpp
 CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/Node.h
 CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/PID.h
 CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/ReadingWindow.h
+CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/ReadingWindow.tpp
 CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/SensorReading.h
+CMakeFiles/AlgoTestBed.dir/main.cpp.o: lib/SensorReading.tpp
 

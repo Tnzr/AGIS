@@ -3,10 +3,14 @@
 #include <Sensors.h>
 #include <Controllers.h>
 #include <Algorithms.h>
-
+#include <DHT.h>
 // #include <FTBDLL.cpp>
 #define WATERPUMP_PIN 15
 #define IWFSENSOR_PIN 2
+#define JS_VRX 32
+#define JS_VRY 35
+#define JS_SW 34
+
 #define LED 2
 #define print(x)  Serial.print(x)
 // PLEASE CHECK THE LIB DIRECTORY FOR PROGRESS
@@ -14,11 +18,11 @@
 
 
 SensorReading<double, double> sensorReading = SensorReading<double, double>(5,4);
-  FTBDLL<SensorReading<double, double>> dll = FTBDLL<SensorReading<double, double>>(4);
-  // FTBDLL<double> dll = FTBDLL<double>(2);
-  WaterFlowSensor wfsensor = WaterFlowSensor(IWFSENSOR_PIN, 2.5, 10);
-  WaterPump waterPump = WaterPump(WATERPUMP_PIN, 300);
-
+FTBDLL<SensorReading<double, double>> dll = FTBDLL<SensorReading<double, double>>(4);
+// FTBDLL<double> dll = FTBDLL<double>(2);
+WaterFlowSensor wfsensor = WaterFlowSensor(IWFSENSOR_PIN, 2.5, 10);
+WaterPump waterPump = WaterPump(WATERPUMP_PIN, 300);
+Joystick joystick = Joystick(JS_VRX, JS_VRY, JS_SW);
 
 void setup() {
   // put your setup code here, to run once:
@@ -46,26 +50,35 @@ void loop() {
 	// Serial.println("Loop: "+80);
 	dll.display();
 	delay(5000); 
+	int vrx = NULL;
+	int vry = NULL;
+	while (1)
+	{
+		/* code */
 
-	while (true){
-		dll.display();
-
-		if(!dll.isFull()){
-			digitalWrite(LED, HIGH);  
-			delay(500);
-			Serial.println(sensorReading);
-			print(dll.push_back(sensorReading));
-			digitalWrite(LED, LOW);  
-			delay(500);
-		}
-		else{
-			print("List is Full\n");
-			while (true);
-			digitalWrite(LED, HIGH);  
-
-		}
-		// dll.display();
+		Serial.println(joystick.read_vrx());
 	}
+	
+
+	// while (true){
+	// 	dll.display();
+
+	// 	if(!dll.isFull()){
+	// 		digitalWrite(LED, HIGH);  
+	// 		delay(500);
+	// 		Serial.println(sensorReading);
+	// 		print(dll.push_back(sensorReading));
+	// 		digitalWrite(LED, LOW);  
+	// 		delay(500);
+	// 	}
+	// 	else{
+	// 		print("List is Full\n");
+	// 		while (true);
+	// 		digitalWrite(LED, HIGH);  
+
+	// 	}
+	// 	// dll.display();
+	// }
 
 
 }

@@ -8,7 +8,10 @@ add_executable(AlgoTestBed main.cpp ${SOURCE_FILES} lib/Algorithms.h lib/PID.h l
 
 set(SOURCE_FILES
         lib/FTBDLL.tpp
-        lib/ReadingWindow.cpp
-        lib/SensorReading.cpp)
+        lib/ReadingWindow.tpp
+        lib/SensorReading.tpp
+        )
 
 target_include_directories(AlgoTestBed PUBLIC lib)
+cmake_minimum_required(VERSION 3.16)
+project(AlgoTestBed)

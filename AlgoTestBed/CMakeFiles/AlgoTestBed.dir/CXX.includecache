@@ -19,6 +19,8 @@ chrono
 -
 thread
 -
+typeinfo
+-
 
 lib/Algorithms.h
 PID.h
@@ -46,17 +48,27 @@ lib/PID.h
 
 lib/ReadingWindow.h
 SensorReading.h
--
+lib/SensorReading.h
 FTBDLL.h
--
+lib/FTBDLL.h
 vector
 -
 list
 -
+ReadingWindow.tpp
+lib/ReadingWindow.tpp
+
+lib/ReadingWindow.tpp
+ReadingWindow.h
+lib/ReadingWindow.h
 
 lib/SensorReading.h
 cstdio
 -
-Algorithms.h
-lib/Algorithms.h
+SensorReading.tpp
+lib/SensorReading.tpp
+
+lib/SensorReading.tpp
+SensorReading.h
+lib/SensorReading.h
 

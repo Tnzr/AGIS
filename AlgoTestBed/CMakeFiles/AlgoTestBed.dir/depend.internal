@@ -9,4 +9,6 @@ CMakeFiles/AlgoTestBed.dir/main.cpp.o
  lib/Node.h
  lib/PID.h
  lib/ReadingWindow.h
+ lib/ReadingWindow.tpp
  lib/SensorReading.h
+ lib/SensorReading.tpp

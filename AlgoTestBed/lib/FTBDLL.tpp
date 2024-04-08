@@ -156,12 +156,12 @@ void FTBDLL<dType>::clear(Node<dType> *older_node, Node<dType> *recent_node){ //
 
 
     if (older_node->prev){
-        if (this->present == older_node)
-        {
+        if (this->present == older_node || this->present == recent_node){
             this->present = this->present->prev;
         }
+        
         if (recent_node != this->tail_node){
-            older_node->prev->next = node->next;
+            older_node->prev->next = recent_node->next;
         }       
     }
 
@@ -171,8 +171,8 @@ void FTBDLL<dType>::clear(Node<dType> *older_node, Node<dType> *recent_node){ //
             if (this->head_node == this->present){
                 this->present = this->present->next;
             }
-            this->head_node = this->head_node->next;
-        }    
+            this->head_node = this->recent_node->next;
+        }
     }
 
     recent_node->next = nullptr;
@@ -182,10 +182,11 @@ void FTBDLL<dType>::clear(Node<dType> *older_node, Node<dType> *recent_node){ //
         this->tail_node = recent_node;
     }
 
-    for (Node<dType>* i = older_node; i!=recent_node ; ) {
+    for (Node<dType>* i = older_node; i!=recent_node->next ;) {
         i->data = dType();
         this->size--;
         i = i->next;
+        
     }
 }
 
@@ -254,5 +255,18 @@ void FTBDLL<dType>::clearPresent() {
 
 template<typename dType>
 bool FTBDLL<dType>::areLinked(Node<dType> *older_node, Node<dType> *recent_node){
-
+    if(older_node == recent_node){
+        return true;
+    }
+    for (Node<dType>* i = older_node; i != nullptr; i = i->next){
+        if (i == recent_node){
+            return true;
+        }
+    }
+    for (Node<dType>* i = recent_node; i != nullptr; i = i->next){
+        if (i == older_node){
+            return true;
+        }
+    }
+    return false;
 }

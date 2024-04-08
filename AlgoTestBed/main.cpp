@@ -4,7 +4,7 @@
 #include <ostream>
 #include <chrono>
 #include <thread>
-
+#include <typeinfo>
 
 int main() {
     FTBDLL<int> dll = FTBDLL<int>(5);
@@ -15,22 +15,22 @@ int main() {
     std::cout << "Front to Back Doubly Linked Lists!" << std::endl;
     std::cout << "Inserting by updating the Present:" << std::endl;
 
-        dll.display();
-
+    dll.display();
+    
     auto t0 = std::chrono::high_resolution_clock::now();
     while (!dll.isFull()){
         
-        // sensorReading.update_reading(m, n);
-        // std::cout << dll.getSize() << "\n";
+
         dll.insertPresent(m);
+        dll.display();
+
         m++;
     }       
     auto t = std::chrono::high_resolution_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(t-t0).count() * 1e-9;
-    std::cout << "\n\nList Filled - " << dll.getSize() << " elements in " << elapsed << "s" << "   Elements/S=" << dll.getSize()/elapsed << std::endl;
+    std::cout << std::fixed << "\n\nList Filled - " << dll.getSize() << " elements in " << elapsed << "s	  " << dll.getSize()/elapsed << typeid(m).name() << " Nodes/s" << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-
-    dll.display();
     std::cout << "\nClearing from the Present:" << std::endl;
 
     while (dll.getSize() != 0){
@@ -38,24 +38,25 @@ int main() {
         dll.clearPresent();
         dll.display();
     }
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
     std::cout << "\n\nInserting by updating the Past:" << std::endl;
      
-             dll.display();
 
     t0 = std::chrono::high_resolution_clock::now();
 
     while (!dll.isFull()){
 
         dll.insertPast(m);
+        dll.display();
         m--;
-        
     }  
     // dll.emptyList();
 
     t = std::chrono::high_resolution_clock::now();
     elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(t-t0).count() * 1e-9;
-    std::cout << "\n\nList Filled - " << dll.getSize() << " elements in " << elapsed << "s" << "   Elements/S=" << dll.getSize()/elapsed << std::endl;
-        dll.display();
+    std::cout << std::fixed << "\n\nList Filled - " << dll.getSize() << " elements in " << elapsed << "s    " << dll.getSize()/elapsed << typeid(m).name() << " Nodes/s" << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     std::cout << "\nClearing from the Past:" << std::endl;
 
@@ -64,6 +65,7 @@ int main() {
         dll.clearPast();
         dll.display();
     }  
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
 
     
@@ -81,7 +83,7 @@ int main() {
 
      t = std::chrono::high_resolution_clock::now();
      elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(t-t0).count() * 1e-9;
-    std::cout << "\nList Filled - " << dll.getSize() << " elements in " << elapsed << "s" << "   Elements/S=" << dll.getSize()/elapsed << std::endl;
+    std::cout << std::fixed << "\nList Filled - " << dll.getSize() << " elements in " << elapsed << "s    " << dll.getSize()/elapsed << typeid(m).name() << " Nodes/s" << std::endl;
 
     // dll.display();
     // dll.emptyList();

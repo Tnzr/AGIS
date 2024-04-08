@@ -1,4 +1,5 @@
-#include <ReadingWindow.h>
+#include "ReadingWindow.h"
+
 
 template<typename dType, typename tType> 
 ReadingWindow<dType, tType>::ReadingWindow(tType tWindow, size_t max_readings){
@@ -75,3 +76,28 @@ void ReadingWindow<dType, tType>::addReading(dType value, tType time){
 
 }
 
+template<typename dType, typename tType> 
+dType ReadingWindow<dType, tType>::areaBetweenReadings(Node<SensorReading<dType, tType>>* start, Node<SensorReading<dType, tType>>* end){
+    
+}
+
+template<typename dType, typename tType> 
+dType ReadingWindow<dType, tType>::getArea(Node<dType>* start, short unsigned int direction){
+    direction = ( direction == 0 || direction == 1) ? direction : 0;
+    dType integral = 0;
+    for (Node<dType>* i = start; 
+        i != ( direction ? this->head_node : this->present ); 
+        i = direction ? i->next : i->prev){
+
+            if (direction)
+            {
+                integral = this->areaBetweenReadings(i, i->next);
+
+            }else{
+                integral = this->areaBetweenReadings(i, i->prev);
+            }
+            
+            
+    }
+    return integral * (direction ? 1 : -1);
+}
