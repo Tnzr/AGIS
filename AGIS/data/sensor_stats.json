@@ -1,0 +1,15 @@
+{
+    "sensors": [{
+        "DHT_Sensor": [
+            { "title": "Temperature", "id": "temperature", "value": 25, "unit": "&deg;C"},
+            { "title": "Humidity", "id": "humidity", "value": 50, "unit": "&percnt;" }
+        ]
+    },{
+        "Waterflow_Sensor": [
+            { "title": "FlowRate", "id": "flowrate", "value": 0, "unit": "L/s"},
+            { "title": "Volume", "id": "humidity", "value": 0, "unit": "L;" }
+        ]
+    }
+    ],
+    "actuators": []
+}

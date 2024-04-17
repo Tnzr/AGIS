@@ -37,3 +37,4 @@ void MotorDriver::setSpeed(float speed){
     setPWM(abs(speed)); // dutycycle == speed
     this->speed = speed;
 }
+

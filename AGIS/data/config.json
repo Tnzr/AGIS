@@ -1,0 +1,18 @@
+{
+    "name": "AGIS",
+    "version": "1.0",
+    "debug": true,
+    "network": {
+      "host": "localhost",
+      "port": 8080
+    },
+    "wifi": {
+      "ssid": "Nancy",
+      "password": "maferefun1@vida"
+    },
+    "wiring": {
+      "dht_pin": [4],
+      "waterflow_pin": [2]
+    }
+  }
+  

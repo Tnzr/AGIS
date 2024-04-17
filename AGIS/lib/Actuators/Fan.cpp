@@ -1,5 +1,30 @@
 #include <Fan.h>
 
+
+
+JsonObject Fan::appendDatatoJson(SensorData data, JsonArray &sensorArray){
+    JsonObject obj = sensorArray.add<JsonObject>();
+    obj["title"] = data.title;
+    obj["id"] = data.id;
+    obj["value"] = data.value;
+    obj["unit"] = data.unit;
+    return obj;
+}
+
+String Fan::toJSON(){
+    JsonDocument doc;
+    // JsonObject sensor = doc.to<JsonObject>();
+    // Create a nested array named "DHT_Sensor"
+    JsonArray sensorArray = doc["Fan"].to<JsonArray>();
+    SensorData rpm = {"RPM", "rpm", status.currentRPM, "RPM"};
+    SensorData cfm = {"CFM", "cfm", status.cfm, "ft^3/min"};
+    appendDatatoJson(rpm, sensorArray); 
+    appendDatatoJson(cfm, sensorArray); 
+    String jsonString;
+    serializeJsonPretty(doc, jsonString);
+    return jsonString; 
+}
+
 Fan::Fan(uint8_t driving_pin, uint8_t sensor_pin, 
 unsigned short int max_rpm, unsigned short int cfm, unsigned long updateDelta){
         this->driving_pin = driving_pin;

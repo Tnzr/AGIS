@@ -2,9 +2,11 @@
 
 #include "WaterPump.h"
 
+
 WaterPump::WaterPump(uint8_t pwm_pin, float lph){
   this->pwm_pin = pwm_pin;
   this->lph = lph;
+  
   pinMode(this->pwm_pin, OUTPUT);
   }
 
