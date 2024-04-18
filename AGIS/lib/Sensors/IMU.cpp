@@ -5,7 +5,7 @@ MPU6050::MPU6050(String devicename, uint8_t pin){
     {
         Serial.println("Sensor init failed");
     }
-    
+    sensor_state;
     sensor_msg.devicename = devicename;
     sensor_msg.type = "imu";
     sensor_msg.sensor_state = sensor_state;
@@ -71,32 +71,44 @@ MPU6050::MPU6050(String devicename, uint8_t pin){
 }
 
 JsonObject MPU6050::appendSensorItem(IMU_Sensor sensor, JsonArray &sensorArray){
-    JsonObject obj = sensorArray.add<JsonObject>();
-    obj["id"] = sensor.id;
-    obj["axis"] = sensor.axis;
-    obj["value"] = sensor.value;
-    obj["unit"] = sensor.unit;
-    return obj;
+    JsonObject sensorObj = sensorArray.add<JsonObject>();
+    sensorObj["id"] = sensor.id;
+    sensorObj["axis"] = sensor.axis;
+    sensorObj["value"] = sensor.value;
+    sensorObj["unit"] = sensor.unit;
+    return sensorObj;
 }
+// type: acc
+JsonArray MPU6050::VecToJsonArray(String type, Vec3<float> vec, String unit=""){
+    JsonArray sensorArray;
+    // JsonObject x = sensorArray.add<JsonObject>();
+    // JsonObject y = sensorArray.add<JsonObject>();
+    // JsonObject z = sensorArray.add<JsonObject>();
+    char* axis = {"X", "Y", "Z"};
+    String Id_x = String("IMU_")+String(type)+String("_")+String(axis[0]);
+    String Id_y = String("IMU_")+String(type)+String("_")+String(axis[1]);
+    String Id_z = String("IMU_")+String(type)+String("_")+String(axis[2]);
 
-JsonObject MPU6050::VecToJson(String type, Vec3<float> imu_sensor_bundle, JsonArray &sensorArray){
-    JsonObject obj = sensorArray.add<JsonObject>();
-    
-    JsonObject appendSensorItem;
-    return obj;
+    IMU_Sensor sensor_unit_x = {Id_x, String(axis[0]), vec.x, unit};
+    IMU_Sensor sensor_unit_y = {Id_y, String(axis[1]), vec.y, unit};
+    IMU_Sensor sensor_unit_z = {Id_z, String(axis[2]), vec.z, unit};
+    appendSensorItem(sensor_unit_x, sensorArray);
+    appendSensorItem(sensor_unit_y, sensorArray);
+    appendSensorItem(sensor_unit_z, sensorArray);
+
+    for (char* ax: axis) {
+
+    }
+
+    return sensorArray;
 }
 
 JsonObject MPU6050::sensorStateToJson(String category, Vec3<float> vec, JsonArray &sensorArray){
-    JsonObject array = sensorArray.add<JsonObject>();
-    array[category][""]
-
-    // appendSensorItem("accel", {})
-    // obj[] = a.acceleration.x;
-    // obj["acc_y"] = a.acceleration.y;
-    // obj["acc_z"] = a.acceleration.z;
-
-
-
+    JsonObject obj = sensorArray.add<JsonObject>();
+    JsonArray acc_array = obj["acc"].add<JsonArray>();
+    VecToJsonArray("acc", sensor_state.acc, "m/s^2", acc_array);
+    JsonArray gyro_array = obj["gyro"].add<JsonArray>();
+    VecToJsonArray("acc", sensor_state.acc, "rad/s", gyro_array);
 }
 
 String MPU6050::toJSON(){
