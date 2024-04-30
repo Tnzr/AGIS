@@ -10,13 +10,13 @@ typedef struct SensorData {
 } SensorData;
 
 
-typedef struct IMU_Packet {
-    String dimension;
-    String sensor_id;
-}
+// typedef struct IMU_Packet {
+//     String dimension;
+//     String sensor_id;
+// };
 
-typedef struct Vec3_Message {
-    Vec3<float> acc;
-    Vec3<float> gyro;
-    Vec3<float> mag;
-}
+// typedef struct Vec3_Message {
+//     Vec3<float> acc;
+//     Vec3<float> gyro;
+//     Vec3<float> mag;
+// }

@@ -70,7 +70,7 @@ MPU6050::MPU6050(String devicename, uint8_t pin){
   }
 }
 
-JsonObject MPU6050::appendSensorItem(IMU_Sensor sensor, JsonArray &sensorArray){
+JsonObject MPU6050::appendSensorItemToArray(IMU_Sensor sensor, JsonArray &sensorArray){
     JsonObject sensorObj = sensorArray.add<JsonObject>();
     sensorObj["id"] = sensor.id;
     sensorObj["axis"] = sensor.axis;
@@ -78,37 +78,45 @@ JsonObject MPU6050::appendSensorItem(IMU_Sensor sensor, JsonArray &sensorArray){
     sensorObj["unit"] = sensor.unit;
     return sensorObj;
 }
+
+JsonObject MPU6050::getJsonFromMetric(IMU_Sensor metric, JsonObject sensorObj){
+    sensorObj["id"] = metric.id;
+    sensorObj["axis"] = metric.axis;
+    sensorObj["value"] = metric.value;
+    sensorObj["unit"] = metric.unit;
+    return sensorObj;
+}
+
 // type: acc
-JsonArray MPU6050::VecToJsonArray(String type, Vec3<float> vec, String unit=""){
-    JsonArray sensorArray;
-    // JsonObject x = sensorArray.add<JsonObject>();
-    // JsonObject y = sensorArray.add<JsonObject>();
-    // JsonObject z = sensorArray.add<JsonObject>();
-    char* axis = {"X", "Y", "Z"};
-    String Id_x = String("IMU_")+String(type)+String("_")+String(axis[0]);
-    String Id_y = String("IMU_")+String(type)+String("_")+String(axis[1]);
-    String Id_z = String("IMU_")+String(type)+String("_")+String(axis[2]);
-
-    IMU_Sensor sensor_unit_x = {Id_x, String(axis[0]), vec.x, unit};
-    IMU_Sensor sensor_unit_y = {Id_y, String(axis[1]), vec.y, unit};
-    IMU_Sensor sensor_unit_z = {Id_z, String(axis[2]), vec.z, unit};
-    appendSensorItem(sensor_unit_x, sensorArray);
-    appendSensorItem(sensor_unit_y, sensorArray);
-    appendSensorItem(sensor_unit_z, sensorArray);
-
-    for (char* ax: axis) {
-
-    }
+JsonArray MPU6050::VecToJsonArray(String type, Vec3<float> vec, JsonArray &sensorArray, String unit=""){
+    String axis[] = {"X", "Y", "Z"};
+    String idx = String("IMU_")+String(type)+String("_")+String(axis[0]);
+    IMU_Sensor sensor_unit_x = {idx, String(axis[0]), vec.x, unit};
+    appendSensorItemToArray(sensor_unit_x, sensorArray);  
+    String idy = String("IMU_")+String(type)+String("_")+String(axis[1]);
+    IMU_Sensor sensor_unit_y = {idy, String(axis[1]), vec.y, unit};
+    appendSensorItemToArray(sensor_unit_y, sensorArray);  
+    String idz = String("IMU_")+String(type)+String("_")+String(axis[2]);
+    IMU_Sensor sensor_unit_z = {idz, String(axis[2]), vec.z, unit};
+    appendSensorItemToArray(sensor_unit_z, sensorArray);  
+    // for (String ax: axis) {
+    //   String id = String("IMU_")+String(type)+String("_")+String(axis[0]);
+    //   IMU_Sensor sensor_unit_x = {id, String(axis[0]), vec.x, unit};
+    //   appendSensorItemToArray(sensor_unit_x, sensorArray);  
+    // }
 
     return sensorArray;
 }
 
-JsonObject MPU6050::sensorStateToJson(String category, Vec3<float> vec, JsonArray &sensorArray){
-    JsonObject obj = sensorArray.add<JsonObject>();
+JsonObject MPU6050::sensorStateToJson(String category, IMU6 sensor_state, JsonObject &obj){
+    // JsonObject obj = sensorArray.add<JsonObject>();
     JsonArray acc_array = obj["acc"].add<JsonArray>();
-    VecToJsonArray("acc", sensor_state.acc, "m/s^2", acc_array);
     JsonArray gyro_array = obj["gyro"].add<JsonArray>();
-    VecToJsonArray("acc", sensor_state.acc, "rad/s", gyro_array);
+    VecToJsonArray("acc", sensor_state.acc, acc_array, "m/s^2");
+    VecToJsonArray("acc", sensor_state.gyro, gyro_array, "rad/s");
+    IMU_Sensor temp = {"IMU_temp", "temp", sensor_state.temperature, "C"};
+    JsonObject temp_json = obj["temp"].add<JsonObject>();
+    getJsonFromMetric(temp, temp_json);
 }
 
 String MPU6050::toJSON(){
@@ -122,9 +130,8 @@ String MPU6050::toJSON(){
     sensor_packet["timestamp"] = getTimestamp();
     // holds accel, gyro, temp
     JsonObject sensor_state_json = sensor_packet["sensor_state"].add<JsonObject>();
-    appendDataToJson("acc", sensor_state.acc, sensor_state_json);
-
-
+    // appendDataToJson("acc", sensor_state.acc, sensor_state_json);
+    sensorStateToJson("", sensor_state, sensor_state_json);
     String jsonString;
     serializeJsonPretty(doc, jsonString);
     return jsonString; 

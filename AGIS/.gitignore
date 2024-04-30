@@ -4,3 +4,5 @@
 .vscode/launch.json
 .vscode/ipch
 /config/network_config.ini
+/src/system_config.h
+/data/config.json

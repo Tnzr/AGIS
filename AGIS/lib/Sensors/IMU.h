@@ -58,12 +58,10 @@ class MPU6050 {
         Vec3<float> getGyro();
         IMU6 getSample();
         String toJSON();
-        String toJSON(Vec3<float> vector);
         JsonObject appendSensorData(IMU_Sensor sensor, JsonArray &sensorArray);
-        JsonObject sensorStateToJson(String sensor_name, Vec3<float> vec, JsonArray &sensorArray);
+        JsonObject sensorStateToJson(String sensor_name, IMU6 sensor_state, JsonObject &obj);
         JsonArray VecToJsonArray(String type, Vec3<float> vector, JsonArray &jArray, String unit);
-        JsonObject appendSensorItem(IMU_Sensor sensor, JsonArray &sensorArray);
-        
-
+        JsonObject appendSensorItemToArray(IMU_Sensor sensor, JsonArray &sensorArray);
+        JsonObject getJsonFromMetric(IMU_Sensor metric, JsonObject sensorObj);
 };
 

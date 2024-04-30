@@ -3,8 +3,8 @@
 #pragma once
 #include <Arduino.h>
 
+
 class WaterFlowSensor{
-  
   private:
     uint8_t sensor_pin;
     float tickToVolume; // ie. ticks to mL
