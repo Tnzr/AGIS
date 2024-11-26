@@ -1,5 +1,4 @@
 # AGIS
-GoFundMe: https://www.gofundme.com/f/autonomous-greenhouse-irrigation-system-agis
 
 Open Source Autonomous Greenhouse Integrated System
 
