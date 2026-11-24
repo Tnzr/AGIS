@@ -35,3 +35,7 @@ I am bringing this project to the community for 2 reasons:
 
 This is an Open Source Project, once it is finished I plan to educate people on how to build theirs and publish all necessary info and code on GitHub. If I manage to find a good way to mass-produce it. I would sell for minimal profit margins once the project gets enough momentum for the non-DIY crowd who prefers to buy something that suits them and works.
 I have very little to no resources. Normally a company would simply pay a secondary company or their own to produce a dataset of images and then label them, but I am one person. I have just enough money to buy the parts for the first prototype, but I have no means to fund this data-acquiring part of the project.
+
+## License
+
+Software (AGIS/, AGIS_App/, AGIS_WebServer/, AlgoTestBed/) is MIT licensed — see LICENSE. Hardware design files (schematics, PCB layouts, including the GreenPrints PCB and schematic images) are licensed under CERN-OHL-P-2.0 — see LICENSE-HARDWARE.
