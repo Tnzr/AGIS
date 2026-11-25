@@ -1,13 +1,10 @@
 #include <DHT_driver.h>
-#include <iostream>
 
 #define DHTTYPE DHT11
 
 DHT_driver::DHT_driver(uint8_t data): dht(data, DHTTYPE), data_pin(data) {
     dht.begin();
-    id = printf("DHT_Sensor_Pin%d", data_pin);
-    stats = sampleRead();
-    pinMode(data_pin, INPUT);
+    id = String("DHT_Sensor_Pin") + data_pin;
 }
 
 
@@ -21,23 +18,24 @@ JsonObject DHT_driver::appendDatatoJson(SensorData data, JsonArray &sensorArray)
 }
 
 
+void DHT_driver::appendReadings(JsonDocument &doc, const DHT_Measurement &reading){
+    JsonArray sensorArray = doc["DHT_Sensor"].to<JsonArray>();
+    SensorData tempData = {"Temperature", "temperature", reading.temperature, "&deg;C"};
+    SensorData humData = {"Humidity", "humidity", reading.humidity, "&percnt;"};
+    appendDatatoJson(tempData, sensorArray);
+    appendDatatoJson(humData, sensorArray);
+}
+
 String DHT_driver::toJSON(){
     JsonDocument doc;
-    // JsonObject sensor = doc.to<JsonObject>();
-    // Create a nested array named "DHT_Sensor"
-    JsonArray sensorArray = doc["DHT_Sensor"].to<JsonArray>();
-    sampleRead();
-    SensorData tempData = {"Temperature", "temperature", stats.temperature, "&deg;C"};
-    SensorData humData = {"Humidity", "humidity", stats.humidity, "&percnt;"};
-    JsonObject tempObj = appendDatatoJson(tempData, sensorArray); 
-    JsonObject humObj = appendDatatoJson(humData, sensorArray); 
+    appendReadings(doc, sampleRead());
     String jsonString;
     serializeJsonPretty(doc, jsonString);
     return jsonString; 
 }
 
 void DHT_driver::setSensorName(String name){ //DHT_Sensor_ID
-    id = printf("DHT_Sensor_%s", name);
+    id = "DHT_Sensor_" + name;
 }
 
 float DHT_driver::getHumidity(){
@@ -54,4 +52,3 @@ DHT_Measurement DHT_driver::sampleRead(){
     stats.humidity = getHumidity();
     return stats;
 }
-
