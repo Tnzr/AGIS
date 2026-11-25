@@ -8,7 +8,7 @@ struct IrrigationOutput {
 };
 
 class IrrigationControl {
-    PID pump{0.5, 0.04, 0, 5000, 0, 1};
+    PID pump{0.25, 0.04, 0, 5000, 0, 1};
     PID temperatureFan{0.1, 0, 0, 5000, 0, 1};
     PID humidityFan{0.05, 0, 0, 5000, 0, 1};
 

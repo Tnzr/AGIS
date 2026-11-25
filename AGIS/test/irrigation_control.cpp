@@ -32,6 +32,18 @@ int main(){
     }
     assert(std::abs(flow - target) < 0.05);
 
+    IrrigationControl fastControl;
+    double fastFlow = 0;
+    for (int sample = 0; sample < 25; ++sample){
+        const auto output = fastControl.step(32, 50, fastFlow, target, 5);
+        fastFlow = 3.0 * output.pumpPwm / 255;
+        if (sample >= 20){
+            std::printf("Fast plant t=%3ds flow=%.2f L/min target=%.2f pump_pwm=%u\n",
+                        sample * 5, fastFlow, target, unsigned(output.pumpPwm));
+        }
+    }
+    assert(std::abs(fastFlow - target) < 0.05);
+
     const auto highFlow = control.step(27, 70, 4, target, 5);
     assert(highFlow.pumpPwm == 0 && highFlow.fanPwm > 102);
     const double invalid = std::numeric_limits<double>::quiet_NaN();
