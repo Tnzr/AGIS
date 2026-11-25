@@ -23,6 +23,10 @@ pump stays off. A positive target requests **continuous** flow; this is not a
 watering scheduler or dry-run protection. Validate the target and water supply
 before enabling it on hardware.
 
+The shipped config has no Wi-Fi credentials. To enable WebSocket access, add
+a `wifi` object with `ssid` and (for a secured network) `password` to the
+device's SPIFFS config locally; do not commit credentials.
+
 PWM follows the checked-in schematic: pump GPIO 5 and fan connector XS2 GPIO 14
 (GPIO 12 sets its supply polarity). The YF-S201 flow input defaults to GPIO 18
 and assumes 450 pulses/L. The DHT11 defaults to GPIO 4 per the firmware config.
