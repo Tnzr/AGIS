@@ -74,8 +74,8 @@ void Config::loadConfig(String filename){
       Serial.println(network.host);
 
       // Wifi config
-      wifi.ssid = doc["wifi"]["ssid"].as<String>();
-      wifi.password = doc["wifi"]["password"].as<String>();
+      wifi.ssid = doc["wifi"]["ssid"] | "";
+      wifi.password = doc["wifi"]["password"] | "";
 
       // Wiring config
       wiring.dhtPin = doc["wiring"]["dht_pin"][0] | wiring.dhtPin;
