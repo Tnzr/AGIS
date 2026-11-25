@@ -1,174 +1,118 @@
 #include <Arduino.h>
-#include <Wire.h>
-#include <SPI.h>
-#include "SPIFFS.h"
-#include "FS.h"
-
-#include <Actuators.h>
-#include <Sensors.h>
-#include <Controllers.h>
-#include <Algorithms.h>
-#include <DHT_driver.h>
-
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-
-
 #include <ArduinoJson.h>
-#include <unordered_map>
-#include <string>
+#include <atomic>
+#include <cstring>
+#include <DHT_driver.h>
+#include <IrrigationControl.h>
+#include <WaterFlowSensor.h>
 #include "config.h"
-// #include <IMU.h>
 
-#define WATERPUMP_PIN 15
-// #define DHT_PIN
-#define LED 2
-#define print(x)  Serial.print(x)
+constexpr uint8_t pumpPin = 5;
+constexpr uint8_t fanPin = 14;
+constexpr uint8_t fanSupplyPin = 12;
+constexpr uint8_t pumpChannel = 0;
+constexpr uint8_t fanChannel = 2;
+constexpr unsigned long sampleIntervalMs = 5000;
 
-
-// PLEASE CHECK THE LIB DIRECTORY FOR PROGRESS
-// The main binary will be developed once all necessary classes are defined
 Config config;
-AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
+std::atomic<bool> readingsRequested{false};
+IrrigationControl control;
 
-String header;
-std::hash<std::string> hasher;
-
-// DHT_driver dht;
-// MPU6050 imu("MPU6050", 22);
-unsigned long currentTime = millis();
-unsigned long previousTime = 0;
-
-unsigned long timerDelta = 5000;
-const unsigned long timeoutTime = 2000;
-
-void notifyClients(String sensorReadings) {
-	ws.textAll(sensorReadings);
-}
-
-void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
-	AwsFrameInfo *info = (AwsFrameInfo*)arg;
-	if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
-		data[len] = 0;
-		String message = (char*) data;
-		if(strcmp((char*)data, "getReadings")==0){
-			String sensorReadings;// = dht.toJSON();
-			print(sensorReadings);
-			notifyClients(sensorReadings);
-		}
-	}
-}
-
-void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
-  switch (type) {
-    case WS_EVT_CONNECT:
-      Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
-      break;
-    case WS_EVT_DISCONNECT:
-      Serial.printf("WebSocket client #%u disconnected\n", client->id());
-      break;
-    case WS_EVT_DATA:
-      handleWebSocketMessage(arg, data, len);
-      break;
-    case WS_EVT_PONG:
-    case WS_EVT_ERROR:
-      break;
-  }
-}
-
-void initSPIFFS(){
-	Serial.println(ESP.getFreeHeap());
-	Serial.println(SPIFFS.begin(true));
-
-	if (!SPIFFS.begin(true))
-	{
-		Serial.println("An Error has ocurred while mounting SPIFFS");
-		return;
-	}else{
-		Serial.println("SPIFFS mounted successfully");
-	}
-}
-
-void initWebSocket(AsyncWebSocket &socket, AsyncWebServer &server){
-	socket.onEvent(onEvent);
-	server.addHandler(&socket);
-}
-
-void initWiFi(){
-	WiFi.mode(WIFI_STA);
-	print("Connecting to Wifi .. ");
-	print("Connecting to: ");
-	// Serial.println(String(config.wifi.ssid));
-	// Serial.println(hasher(config.wifi.ssid));
-	// Serial.println(config.wifi.password);
-	WiFi.begin(config.wifi.ssid, config.wifi.password);
-	while (WiFi.status() != WL_CONNECTED) {
-		print('.');
-		digitalWrite(LED, HIGH);
-		delay(1000);
-		digitalWrite(LED, LOW);
-		Serial.println(WiFi.localIP());
-	}
-	Serial.println("");
-	Serial.println("WiFi connected.");
-	Serial.println("IP address: ");
-	Serial.println(WiFi.localIP());
-}
-
-void blink(unsigned long time){
-	digitalWrite(LED, HIGH);
-	delay(time/2);
-	digitalWrite(LED, LOW);
-	delay(time/2);
+void onEvent(AsyncWebSocket *, AsyncWebSocketClient *client, AwsEventType type,
+             void *arg, uint8_t *data, size_t len) {
+    switch (type) {
+        case WS_EVT_CONNECT:
+            Serial.printf("WebSocket client #%u connected\n", client->id());
+            break;
+        case WS_EVT_DISCONNECT:
+            Serial.printf("WebSocket client #%u disconnected\n", client->id());
+            break;
+        case WS_EVT_DATA: {
+            const auto *info = static_cast<const AwsFrameInfo *>(arg);
+            constexpr char command[] = "getReadings";
+            if (info->final && info->index == 0 && info->len == len &&
+                info->opcode == WS_TEXT && len == sizeof(command) - 1 &&
+                std::memcmp(data, command, len) == 0) {
+                readingsRequested.store(true);
+            }
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 void setup() {
+    Serial.begin(115200);
 
-	Serial.begin(115200);
-	pinMode(LED, OUTPUT);
-	Serial.println("Serial");
-	initSPIFFS();
-	Serial.println("initSPIFFS");
-	config.loadConfig("/config.json");
-	Serial.println("loaded config");
-	      Serial.println(config.info.name);
+    ledcSetup(pumpChannel, 1000, 8);
+    ledcSetup(fanChannel, 25000, 8);
+    ledcAttachPin(pumpPin, pumpChannel);
+    ledcAttachPin(fanPin, fanChannel);
+    ledcWrite(pumpChannel, 0);
+    ledcWrite(fanChannel, 0);
+    pinMode(fanSupplyPin, OUTPUT);
+    digitalWrite(fanSupplyPin, HIGH);
 
-      Serial.println(config.network.host);
-      Serial.println(config.wifi.ssid);
-      Serial.println(config.wifi.password);
+    const bool mounted = SPIFFS.begin(true);
+    if (mounted) {
+        config.loadConfig("/config.json");
+    } else {
+        Serial.println("Failed to mount SPIFFS");
+    }
 
-	initWiFi(); // Turn On WiFi and Connect to known SSID
-	Serial.println("wifi");
-	server = AsyncWebServer(config.network.port);
-	initWebSocket(ws, server);
+    WiFi.mode(WIFI_STA);
+    if (config.wifi.ssid.length()) {
+        WiFi.begin(config.wifi.ssid.c_str(), config.wifi.password.c_str());
+    }
 
-
-	server.serveStatic("/", SPIFFS, "/");
-	server.begin();
-	// dht = DHT_driver(config.wiring.dhtPin);
+    static AsyncWebServer server(config.network.port);
+    ws.onEvent(onEvent);
+    server.addHandler(&ws);
+    if (mounted) {
+        server.on("/sensor_stats.json", HTTP_GET, [](AsyncWebServerRequest *request) {
+            request->send(SPIFFS, "/sensor_stats.json", "application/json");
+        });
+    }
+    server.begin();
 }
 
- 
 void loop() {
-	print("Connecting to: ");
+    static DHT_driver dht(config.wiring.dhtPin);
+    static WaterFlowSensor waterFlow(config.wiring.waterflowPin);
+    static unsigned long lastSample = millis();
+    static String telemetry;
 
-	blink(100);
-	Serial.println("sensor");
+    const unsigned long now = millis();
+    const unsigned long elapsed = now - lastSample;
+    const bool requested = readingsRequested.exchange(false);
+    if (elapsed >= sampleIntervalMs) {
+        lastSample = now;
+        const float flowLpm = waterFlow.sampleLitresPerMinute(now);
+        const DHT_Measurement reading = dht.sampleRead();
+        const auto output = control.step(reading.temperature, reading.humidity, flowLpm,
+                                         config.targetFlowLpm, elapsed / 1000.0);
+        ledcWrite(pumpChannel, output.pumpPwm);
+        ledcWrite(fanChannel, output.fanPwm);
 
-	if ((millis() - previousTime)> timerDelta){
-		blink(100);
-		String sensorReadings;// = dht.toJSON();
-		// String imuReading = imu.toJSON();
-		Serial.println(sensorReadings);
-		// Serial.println(imuReading);
-		// Serial.println("foidfb");
-		// sensorReadings.concat(imuRseading);
-		notifyClients(sensorReadings);
-		previousTime = millis();
-	}
-	ws.cleanupClients();
+        JsonDocument doc;
+        dht.appendReadings(doc, reading);
+        doc["Waterflow_Sensor"]["flow_lpm"] = flowLpm;
+        doc["Waterflow_Sensor"]["target_lpm"] = config.targetFlowLpm;
+        doc["Actuators"]["pump_pwm"] = output.pumpPwm;
+        doc["Actuators"]["fan_pwm"] = output.fanPwm;
+        telemetry = "";
+        serializeJson(doc, telemetry);
+        Serial.println(telemetry);
+        ws.textAll(telemetry);
+    } else if (requested && telemetry.length()) {
+        ws.textAll(telemetry);
+    }
 
+    ws.cleanupClients();
+    delay(20);
 }
-

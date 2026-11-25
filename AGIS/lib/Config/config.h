@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Arduino.h>
 #include <ArduinoJson.h>
 #include "FS.h"
 #include "SPIFFS.h"
@@ -8,17 +9,17 @@
 
 struct NetworkConfig {
   String host;
-  int port;
+  uint16_t port = 8080;
 };
 
 struct WifiConfig {
-  const char* ssid;
-  const char* password;
+  String ssid;
+  String password;
 };
 
 struct WiringConfig {
-  uint8_t dhtPin;
-  uint8_t waterflowPin;
+  uint8_t dhtPin = 4;
+  uint8_t waterflowPin = 18;
 };
 
 struct SystemInfo {
@@ -41,7 +42,7 @@ class Config {
     NetworkConfig network;
     WifiConfig wifi;
     WiringConfig wiring;
-    // Config();
+    float targetFlowLpm = 0;
     void loadConfig(String filename);
 };
 
@@ -54,13 +55,9 @@ void Config::loadConfig(String filename){
         return;
       }
 
-      size_t size = configFile.size();
-      std::unique_ptr<char[]> buf(new char[size]);
-      configFile.readBytes(buf.get(), size);
-      configFile.close();
-
       JsonDocument doc;
-      DeserializationError error = deserializeJson(doc, buf.get());
+      DeserializationError error = deserializeJson(doc, configFile);
+      configFile.close();
       if (error) {
         Serial.print("deserializeJson() failed: ");
         Serial.println(error.c_str());
@@ -73,18 +70,16 @@ void Config::loadConfig(String filename){
 
       // Network config
       network.host = doc["network"]["host"].as<String>();
-      network.port = doc["network"]["port"].as<int>();
+      network.port = doc["network"]["port"] | network.port;
       Serial.println(network.host);
 
       // Wifi config
-      wifi.ssid = doc["wifi"]["ssid"].as<const char*>();
-      wifi.password = doc["wifi"]["password"].as<const char*>();
-      Serial.println(wifi.ssid);
-      Serial.println(wifi.password);
+      wifi.ssid = doc["wifi"]["ssid"] | "";
+      wifi.password = doc["wifi"]["password"] | "";
 
       // Wiring config
-      wiring.dhtPin = doc["wiring"]["dht_pin"][0].as<int>();
-      wiring.waterflowPin = doc["wiring"]["waterflow_pin"][0].as<int>();
+      wiring.dhtPin = doc["wiring"]["dht_pin"][0] | wiring.dhtPin;
+      wiring.waterflowPin = doc["wiring"]["waterflow_pin"][0] | wiring.waterflowPin;
+      targetFlowLpm = doc["irrigation"]["target_flow_lpm"] | 0.0f;
 
     }
-

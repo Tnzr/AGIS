@@ -1,55 +1,29 @@
-// WaterFlowSensor cpp
 #include "WaterFlowSensor.h"
 
+constexpr float pulsesPerLitre = 450.0f;
 
-WaterFlowSensor::WaterFlowSensor(int sense_pin, float conversion, 
-                                unsigned long updateDelta){
-    this->sensor_pin = sense_pin;
-    this->tickToVolume = conversion;
-    this->tick_count = 0;
-    this->flowRate = 0;
-    this->deltaTime = 0;
-    this->updateDelta = updateDelta;
-    this->currentVolume = 0;
-    this->now = millis();
-    this->lastUpdate = this->now;
-
-    pinMode(sensor_pin, INPUT);
-    attachInterrupt(digitalPinToInterrupt(this->sensor_pin), 
-      (void(*)())this->pulse_tick(), RISING);
-  }
-
-// static void _attachInterrupt(uint8_t pin, void *callback, int mode){
-//   attachInterrupt(digitalPinToInterrupt(pin), (void(*)())callback, mode);
-// }
-
-void *WaterFlowSensor::pulse_tick(){
-  this->now = millis();
-  this->tick_count++;
-  this->deltaTime = this->now-this->lastUpdate;
-  
-  // TODO 
-  // deltaTime/tick timeout
-
-  if (this->deltaTime >= this->updateDelta){
-    this->updateFlowRate();
-    this->lastUpdate = this->now;
-  }
-  return nullptr;
+WaterFlowSensor::WaterFlowSensor(uint8_t pin) : lastSample(millis()){
+    pinMode(pin, INPUT);
+    attachInterruptArg(digitalPinToInterrupt(pin), pulseTick, this, RISING);
 }
 
-
-void WaterFlowSensor::updateFlowRate(){
-  // pulse * V/pulse * 1,000ms/s / deltaTime (ms)
-  this->flowRate = this->tick_count * this->tickToVolume * 1000 / this->deltaTime;
-  this->tick_count = 0;
+void IRAM_ATTR WaterFlowSensor::pulseTick(void *arg){
+    auto &sensor = *static_cast<WaterFlowSensor *>(arg);
+    portENTER_CRITICAL_ISR(&sensor.lock);
+    ++sensor.pulses;
+    portEXIT_CRITICAL_ISR(&sensor.lock);
 }
 
-float WaterFlowSensor::getVolume(){
-  return this->currentVolume;
-}
+float WaterFlowSensor::sampleLitresPerMinute(unsigned long now){
+    const unsigned long elapsed = now - lastSample;
+    if (!elapsed) {
+        return 0;
+    }
 
-void WaterFlowSensor::resetVolume(){
-  this->currentVolume = 0;
+    portENTER_CRITICAL(&lock);
+    const uint32_t count = pulses;
+    pulses = 0;
+    portEXIT_CRITICAL(&lock);
+    lastSample = now;
+    return count * 60000.0f / (pulsesPerLitre * elapsed);
 }
-

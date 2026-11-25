@@ -26,9 +26,9 @@ class DHT_driver {
         float getHumidity();
         float getTemperature();
         DHT_Measurement sampleRead();
+        void appendReadings(JsonDocument &doc, const DHT_Measurement &reading);
         String toJSON();
         void setSensorName(String name);
 
 };
-
 
