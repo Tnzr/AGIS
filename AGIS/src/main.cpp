@@ -74,7 +74,9 @@ void setup() {
     ws.onEvent(onEvent);
     server.addHandler(&ws);
     if (mounted) {
-        server.serveStatic("/", SPIFFS, "/");
+        server.on("/sensor_stats.json", HTTP_GET, [](AsyncWebServerRequest *request) {
+            request->send(SPIFFS, "/sensor_stats.json", "application/json");
+        });
     }
     server.begin();
 }
